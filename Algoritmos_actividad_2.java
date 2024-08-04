@@ -3,7 +3,7 @@ package com.mycompany.algoritmos_actividad_2;
 import java.util.Scanner;
 
 /**
- * Esta clase fue creada para la actividad no.2 de algoritmos y fue subida a gitHub
+ * Esta clase fue creada para la actividad no.2 de algoritmos y fue subida a gitHub (tercer edición)
  * @author Eduardo Velasquez
  * @since 2024-07-02
  * 
