@@ -22,12 +22,12 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author eduar
  */
-public class gestionCaracteristicas extends javax.swing.JFrame {
+public class gestionEspecificaiones extends javax.swing.JFrame {
 
     /**
-     * Creates new form gestionCaracteristicas
+     * Creates new form gestionEspecificaiones
      */
-    public gestionCaracteristicas() {
+    public gestionEspecificaiones() {
         initComponents();
         setLocationRelativeTo(null);
         obtenerDatos();
@@ -37,13 +37,13 @@ public class gestionCaracteristicas extends javax.swing.JFrame {
     public void obtenerDatos(){
         try {
             // Creación ficticia del archivo
-            File listaCaracteristicas = new File("data/listaCaracteristicas.txt");
-            BufferedReader reader = new BufferedReader(new FileReader(listaCaracteristicas));
+            File listaEspecificaciones = new File("data/listaEspecificaciones.txt");
+            BufferedReader reader = new BufferedReader(new FileReader(listaEspecificaciones));
             String data = "";
             
             // Recopilación de datos
             while ((data = reader.readLine()) != null) {                
-                DefaultTableModel model = (DefaultTableModel) caracteristicasTabla.getModel();
+                DefaultTableModel model = (DefaultTableModel) EspecificaionesTabla.getModel();
                 
                 Object[] newRow = {data};
                 
@@ -60,7 +60,7 @@ public class gestionCaracteristicas extends javax.swing.JFrame {
     
     // Función de limpiar tabla
     public void limpiarTabla(){
-        DefaultTableModel model = (DefaultTableModel) caracteristicasTabla.getModel();
+        DefaultTableModel model = (DefaultTableModel) EspecificaionesTabla.getModel();
         int row = model.getRowCount()-1;
         for (int i = row; i >= 0; i--) {
             model.removeRow(i);
@@ -69,14 +69,15 @@ public class gestionCaracteristicas extends javax.swing.JFrame {
     
     // Función de limpiar campos
     public void limpiarCampos(){
-        txtCarProd.setText("");
+        txtEspProd.setText("");
+        cboUnidadMedida.setSelectedItem("");
     }
     
     // Función de validación de campos
     public boolean validarCampos(){
         // Determinación para que existan valores en el campo ID
-        if (txtCarProd.getText().toString().compareTo("") == 0) {
-            JOptionPane.showMessageDialog(null, "Advertencia: No deje vacío el campo de descripción de la característica", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        if (txtEspProd.getText().toString().compareTo("") == 0) {
+            JOptionPane.showMessageDialog(null, "Advertencia: No deje vacío el campo de descripción de la especificación", "Advertencia", JOptionPane.WARNING_MESSAGE);
             return false;
         }
         
@@ -84,9 +85,9 @@ public class gestionCaracteristicas extends javax.swing.JFrame {
     }
     
     // Función para validar la autenticidad de descripción de categoria
-    public boolean validarCaracteristica(){
+    public boolean validarEspecificacion(){
         // Determinación de modelo de tabla
-        DefaultTableModel model = (DefaultTableModel) caracteristicasTabla.getModel();
+        DefaultTableModel model = (DefaultTableModel) EspecificaionesTabla.getModel();
         
         // obtener el recuento de columnas
         int row = model.getRowCount()-1;
@@ -96,7 +97,7 @@ public class gestionCaracteristicas extends javax.swing.JFrame {
         
         // ciclo de repetición para comparar las filas una por una
         for (int i = row; i >= 0; i--) {
-            if (txtCarProd.getText().compareTo(model.getValueAt(i, 0).toString()) == 0){
+            if (txtEspProd.getText().compareTo(model.getValueAt(i, 0).toString()) == 0){
                 isEquasAT++;
             }
         }
@@ -121,34 +122,36 @@ public class gestionCaracteristicas extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        txtCarProd = new javax.swing.JTextField();
+        txtEspProd = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        caracteristicasTabla = new javax.swing.JTable();
+        EspecificaionesTabla = new javax.swing.JTable();
         btnEliminar = new javax.swing.JButton();
         btnLimpiarCampos = new javax.swing.JButton();
-        btnAgregarCar = new javax.swing.JButton();
+        btnAgregarEsp = new javax.swing.JButton();
+        cboUnidadMedida = new javax.swing.JComboBox<>();
+        jLabel3 = new javax.swing.JLabel();
 
         jLabel1.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel1.setText("Características");
+        jLabel1.setText("Especificaciones");
         jLabel1.setToolTipText("");
 
-        txtCarProd.setToolTipText("");
-        txtCarProd.addActionListener(new java.awt.event.ActionListener() {
+        txtEspProd.setToolTipText("");
+        txtEspProd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCarProdActionPerformed(evt);
+                txtEspProdActionPerformed(evt);
             }
         });
 
-        jLabel2.setText("Descripción de la característica:");
+        jLabel2.setText("Descrición de la especificación:");
 
-        caracteristicasTabla.setModel(new javax.swing.table.DefaultTableModel(
+        EspecificaionesTabla.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Característica"
+                "Especificación"
             }
         ) {
             Class[] types = new Class [] {
@@ -166,12 +169,12 @@ public class gestionCaracteristicas extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        caracteristicasTabla.addMouseListener(new java.awt.event.MouseAdapter() {
+        EspecificaionesTabla.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                caracteristicasTablaMouseClicked(evt);
+                EspecificaionesTablaMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(caracteristicasTabla);
+        jScrollPane1.setViewportView(EspecificaionesTabla);
 
         btnEliminar.setText("Eliminar");
         btnEliminar.setToolTipText("");
@@ -189,13 +192,17 @@ public class gestionCaracteristicas extends javax.swing.JFrame {
             }
         });
 
-        btnAgregarCar.setText("Agregar");
-        btnAgregarCar.setToolTipText("");
-        btnAgregarCar.addActionListener(new java.awt.event.ActionListener() {
+        btnAgregarEsp.setText("Agregar");
+        btnAgregarEsp.setToolTipText("");
+        btnAgregarEsp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAgregarCarActionPerformed(evt);
+                btnAgregarEspActionPerformed(evt);
             }
         });
+
+        cboUnidadMedida.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "KG", "CM", "M", "A", "L", "ML", "CD", "PLG", "PIE" }));
+
+        jLabel3.setText("Unidad de medida");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -203,19 +210,29 @@ public class gestionCaracteristicas extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(btnAgregarEsp, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
+                            .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGap(106, 106, 106))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGap(183, 183, 183)))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(txtCarProd, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnLimpiarCampos, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnAgregarCar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(txtEspProd, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(cboUnidadMedida, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnLimpiarCampos)))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -223,15 +240,18 @@ public class gestionCaracteristicas extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtCarProd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnLimpiarCampos))
+                    .addComponent(txtEspProd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnLimpiarCampos)
+                    .addComponent(cboUnidadMedida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(23, 23, 23)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnEliminar)
-                    .addComponent(btnAgregarCar))
+                    .addComponent(btnAgregarEsp))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -240,20 +260,20 @@ public class gestionCaracteristicas extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtCarProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCarProdActionPerformed
+    private void txtEspProdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEspProdActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtCarProdActionPerformed
+    }//GEN-LAST:event_txtEspProdActionPerformed
 
-    private void caracteristicasTablaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_caracteristicasTablaMouseClicked
+    private void EspecificaionesTablaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EspecificaionesTablaMouseClicked
         // Obtener la fila seleccionada de la tabla
-        int row = caracteristicasTabla.getSelectedRow();
+        int row = EspecificaionesTabla.getSelectedRow();
 
         // Obtener valores de la fila seleccionada por medio de la posición de columnas
-        String desCat = caracteristicasTabla.getValueAt(row, 0).toString();
+        String desCat = EspecificaionesTabla.getValueAt(row, 0).toString();
 
         // Reflejar los datos obtenidos en las JTextField
-        txtCarProd.setText(desCat);
-    }//GEN-LAST:event_caracteristicasTablaMouseClicked
+        txtEspProd.setText(desCat);
+    }//GEN-LAST:event_EspecificaionesTablaMouseClicked
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         // Segumiento de acción por parte del usuario
@@ -261,7 +281,7 @@ public class gestionCaracteristicas extends javax.swing.JFrame {
         if (response == JOptionPane.NO_OPTION) {
             return;
         }
-        
+
         // Validación de campos
         if (validarCampos() == false){
             return;
@@ -270,17 +290,17 @@ public class gestionCaracteristicas extends javax.swing.JFrame {
         // Método Try obligatorio para ejecutar la escritura y/o escritura de datos.
         try {
             // Creación ficticia del archivo
-            File listaCaracteristicas = new File("data/listaCaracteristicas.txt");
-            BufferedReader reader = new BufferedReader(new FileReader(listaCaracteristicas));
+            File listaEspecificaciones = new File("data/listaEspecificaciones.txt");
+            BufferedReader reader = new BufferedReader(new FileReader(listaEspecificaciones));
             String data = "";
 
             // Creación ficticia del archivo
-            File listaCaracteristicasCopia = new File("data/listaCaracteristicasCopia.txt");
-            BufferedWriter writer = new BufferedWriter(new FileWriter(listaCaracteristicasCopia, true));
+            File listaEspecificacionesCopia = new File("data/listaEspecificacionesCopia.txt");
+            BufferedWriter writer = new BufferedWriter(new FileWriter(listaEspecificacionesCopia, true));
 
             // Recopilación de datos
             while ((data = reader.readLine()) != null) {
-                if (data.toString().compareTo(txtCarProd.getText()) != 0){
+                if (data.toString().compareTo(txtEspProd.getText()) != 0){
                     writer.write(data + "\n");
                 }
             }
@@ -290,7 +310,7 @@ public class gestionCaracteristicas extends javax.swing.JFrame {
             writer.close();
 
             // Reemplazar archivo copia con el archivo original
-            Files.move(listaCaracteristicasCopia.toPath(), listaCaracteristicas.toPath(), REPLACE_EXISTING);
+            Files.move(listaEspecificacionesCopia.toPath(), listaEspecificaciones.toPath(), REPLACE_EXISTING);
 
             // Métodos para refrescar el módulo
             limpiarCampos();
@@ -308,31 +328,43 @@ public class gestionCaracteristicas extends javax.swing.JFrame {
         limpiarCampos();
     }//GEN-LAST:event_btnLimpiarCamposActionPerformed
 
-    private void btnAgregarCarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarCarActionPerformed
+    private void btnAgregarEspActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarEspActionPerformed
         // Segumiento de acción por parte del usuario
         int response = JOptionPane.showConfirmDialog(null, "¿Estás seguro de realizar esta acción?", "Confirmación", JOptionPane.YES_NO_OPTION);
         if (response == JOptionPane.NO_OPTION) {
             return;
         }
-        
-         // Validación de campos
+
+        // Validación de campos
         if (validarCampos() == false){
             return;
         }
-        
+
         // Condición para validar el campo de descripción de categoría
-        if (validarCaracteristica() == false){
+        if (validarEspecificacion()== false){
             return;
         }
 
         // Método Try obligatorio para ejecutar la escritura y/o escritura de datos.
         try {
             // Creación ficticia del archivo
-            File listaCaracteristicas = new File("data/listaCaracteristicas.txt");
-            BufferedWriter writer = new BufferedWriter(new FileWriter(listaCaracteristicas, true));
+            File listaEspecificaciones = new File("data/listaEspecificaciones.txt");
+            BufferedWriter writer = new BufferedWriter(new FileWriter(listaEspecificaciones, true));
 
+            // Inicialización de variable que contiene los datos de inserción
+            String newReg = "";
+            
+            // Validación de unidad de medida - ¿Se ingresa o no?
+            if (!(cboUnidadMedida.getSelectedItem().toString() == "")){
+                // Si se ingresa se toma en cuenta el combobox de unidad de medida
+                newReg = txtEspProd.getText() + " " + cboUnidadMedida.getSelectedItem().toString();
+            } else {
+                // sino el registro solo toma en cuenta el campo de descripción de la especificación
+                newReg = txtEspProd.getText();
+            }
+            
             // Escritura de datos al archivo de acceso secuencial
-            writer.write(txtCarProd.getText() + "\n");
+                writer.write(newReg + "\n");
 
             // Cierre de acción de escritura
             writer.close();
@@ -343,12 +375,12 @@ public class gestionCaracteristicas extends javax.swing.JFrame {
             limpiarCampos();
 
             // Mensaje de aviso al usuario
-            JOptionPane.showMessageDialog(null, "Se ha agregado nueva categoría", "Operación exitosa", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Se ha agregado una nueva especificación", "Operación exitosa", JOptionPane.INFORMATION_MESSAGE);
 
         } catch (IOException ex) {
             Logger.getLogger(gestionCaracteristicas.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_btnAgregarCarActionPerformed
+    }//GEN-LAST:event_btnAgregarEspActionPerformed
 
     /**
      * @param args the command line arguments
@@ -367,32 +399,34 @@ public class gestionCaracteristicas extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(gestionCaracteristicas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(gestionEspecificaiones.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(gestionCaracteristicas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(gestionEspecificaiones.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(gestionCaracteristicas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(gestionEspecificaiones.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(gestionCaracteristicas.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(gestionEspecificaiones.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new gestionCaracteristicas().setVisible(true);
+                new gestionEspecificaiones().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAgregarCar;
+    private javax.swing.JTable EspecificaionesTabla;
+    private javax.swing.JButton btnAgregarEsp;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnLimpiarCampos;
-    private javax.swing.JTable caracteristicasTabla;
+    private javax.swing.JComboBox<String> cboUnidadMedida;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField txtCarProd;
+    private javax.swing.JTextField txtEspProd;
     // End of variables declaration//GEN-END:variables
 }
