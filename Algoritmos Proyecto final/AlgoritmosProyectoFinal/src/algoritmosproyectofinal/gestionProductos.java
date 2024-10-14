@@ -39,14 +39,10 @@ public class gestionProductos extends javax.swing.JFrame {
     // Funciones
     public gestionProductos() {
         initComponents();
+        // Funciones de inicialización
         setLocationRelativeTo(null);
-        obtenerDatos();
-        
-        // Carga de datos en los comboBox
-        cargarCombobox(cboCatProd, "listaCategorias");
-        cargarCombobox(cboCarProd, "listaCaracteristicas");
-        cargarCombobox(cboEspeProd, "listaEspecificaciones");
-        cargarCategorias(lCar, "listaCaracteristicas");
+        obtenerDatos();        
+        cargarCombobox();
 
     }
     
@@ -79,6 +75,15 @@ public class gestionProductos extends javax.swing.JFrame {
         }
         
     }
+    
+    // Función para rerescar todos los datos de los combobox
+    public void cargarCombobox(){
+        cargarCombobox(cboCatProd, "listaCategorias");
+        cargarCombobox(cboCarProd, "listaCaracteristicas");
+        cargarCombobox(cboEspeProd, "listaEspecificaciones");
+        cargarCategorias(lCar, "listaCaracteristicas");
+    }
+    
     
     // Función de limpiar tabla
     public void limpiarTabla(){
@@ -172,44 +177,44 @@ public class gestionProductos extends javax.swing.JFrame {
         // Determinación para comprobar que existan valores en el campo descrición del producto
         if (txtDesProd.getText().compareTo("") == 0) {
             JOptionPane.showMessageDialog(null, "Advertencia: No deje vacío el campo de descripción de producto", "Advertencia", JOptionPane.WARNING_MESSAGE);
-            return 1;
+            return 2;
         }
         
         // Determinación para comprobar que existan valores en el campo categoría del producto
         if (cboCatProd.getSelectedItem().toString().compareTo("") == 0) {
             JOptionPane.showMessageDialog(null, "Advertencia: Seleccione la categoría del producto", "Advertencia", JOptionPane.WARNING_MESSAGE);
-            return 1;
+            return 2;
         }
         
         // Determinación para comprobar que existan valores en el campo características del producto
         if (cboCarProd.getSelectedItem().toString().compareTo("") == 0) {
             JOptionPane.showMessageDialog(null, "Advertencia: Seleccione las características del producto", "Advertencia", JOptionPane.WARNING_MESSAGE);
-            return 1;
+            return 2;
         }
         
         // Determinación para comprobar que existan valores en el campo especificaciones del producto
         if (cboEspeProd.getSelectedItem().toString().compareTo("") == 0) {
             JOptionPane.showMessageDialog(null, "Advertencia: Seleccione las especificaciones del producto", "Advertencia", JOptionPane.WARNING_MESSAGE);
-            return 1;
+            return 2;
         }
         
         // Determinación para comprobar que el precio tenga el formato correspondiente
         if (txtPrecioProd.getText().compareTo("") == 0) {
             JOptionPane.showMessageDialog(null, "Advertencia: No deje vacío el campo de precio del producto", "Advertencia", JOptionPane.WARNING_MESSAGE);
-            return 1;
+            return 2;
         }
         try {
             float testValue = Float.parseFloat(txtPrecioProd.getText());
         } catch (NumberFormatException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Advertencia: el campo de precio tiene caracteres no permitidos", "Advertencia", JOptionPane.WARNING_MESSAGE);
-            return 1;
+            return 2;
         }
         
         // Determinación para comprobar que el campo de Stock inicial sea numérico
         if (txtStockInicial.getText().compareTo("") == 0) {
             JOptionPane.showMessageDialog(null, "Advertencia: No deje vacío el campo de stock inicial de producto", "Advertencia", JOptionPane.WARNING_MESSAGE);
-            return 1;
+            return 2;
         }
         try {
             int testValue = Integer.parseInt(txtStockInicial.getText());
@@ -313,6 +318,7 @@ public class gestionProductos extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         lCar = new javax.swing.JList<>();
+        btnRefrescar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -504,6 +510,13 @@ public class gestionProductos extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(lCar);
 
+        btnRefrescar.setText("Refrescar");
+        btnRefrescar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefrescarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -568,11 +581,17 @@ public class gestionProductos extends javax.swing.JFrame {
                             .addComponent(btnVerCategorias2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnVerCategorias, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnRefrescar)
+                .addGap(32, 32, 32))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(38, 38, 38)
+                .addContainerGap()
+                .addComponent(btnRefrescar)
+                .addGap(2, 2, 2)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnVerCategorias)
@@ -947,6 +966,12 @@ public class gestionProductos extends javax.swing.JFrame {
         System.out.println(lCar.getSelectedValuesList());
     }//GEN-LAST:event_lCarValueChanged
 
+    private void btnRefrescarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefrescarActionPerformed
+        cargarCombobox();
+        limpiarTabla();
+        obtenerDatos();
+    }//GEN-LAST:event_btnRefrescarActionPerformed
+
     
     
     /**
@@ -989,6 +1014,7 @@ public class gestionProductos extends javax.swing.JFrame {
     private javax.swing.JButton btnAgregarProducto;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnLimpiarCampos;
+    private javax.swing.JButton btnRefrescar;
     private javax.swing.JButton btnVerCategorias;
     private javax.swing.JButton btnVerCategorias1;
     private javax.swing.JButton btnVerCategorias2;

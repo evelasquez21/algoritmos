@@ -35,9 +35,60 @@ public class controlExistencias extends javax.swing.JFrame {
     public controlExistencias() {
         initComponents();
         setLocationRelativeTo(null);
+        
     }
     
     //* Apartado de funciones *//
+    // Verificar usuario de sesión activa
+    public String verificarUsuario(){
+        try {
+            // Creación ficticia del archivo
+            File file = new File("data/sesionActiva.txt");
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String data = "";
+            
+            data = reader.readLine();
+            
+            // Cierre de archivo de lectura
+            reader.close();
+            return data;
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(controlExistencias.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(controlExistencias.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "";
+    }
+    
+    // Función para cargar los datos completos de productos
+    public void cargarDatos(String fileroot, JTable table){
+        try {
+            // Creación ficticia del archivo
+            File file = new File("data/" + fileroot + ".txt");
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String data = "";
+            
+            // Recopilación de datos
+            while ((data = reader.readLine()) != null) {   
+                
+                
+                // Creación de objeto y asignación con separación de cadenas
+                Object[] newRow = data.split("%/%");
+                
+                DefaultTableModel model = (DefaultTableModel) table.getModel();
+                Object[] selectData = {newRow[0], newRow[1], newRow[6]};
+                model.addRow(selectData);
+            }
+            
+            // Cierre de archivo de lectura
+            reader.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(controlExistencias.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(controlExistencias.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     //Función para buscar un producto
     public void buscarProducto(JTextField codeProd, String fileroot, JTable table){
         try {
@@ -61,8 +112,37 @@ public class controlExistencias extends javax.swing.JFrame {
                     // Adición de los datos a las filas de la tabla
                     model.addRow(selectData);
                 }
+            }
+            
+            // Cierre de archivo de lectura
+            reader.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(controlExistencias.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(controlExistencias.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    // Función para filtrar el producto dentro de movimientos
+    public void buscarMovimiento(JTextField codeProd, String fileroot, JTable table){
+        try {
+            // Creación ficticia del archivo
+            File file = new File("data/" + fileroot + ".txt");
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String data = "";
+            
+            // Recopilación de datos
+            while ((data = reader.readLine()) != null) {
+                // Determinación de modelo de tabla
+                DefaultTableModel model = (DefaultTableModel) table.getModel();
                 
+                // Creación de objeto y asignación con separación de cadenas
+                Object[] newRow = data.split("%/%");
                 
+                if (newRow[1].toString().compareTo(codeProd.getText()) == 0){
+                    // Adición de los datos a las filas de la tabla
+                    model.addRow(newRow);
+                } 
             }
             
             // Cierre de archivo de lectura
@@ -183,14 +263,14 @@ public class controlExistencias extends javax.swing.JFrame {
                 Object[] newRow = data.split("%/%");
                 
                 // Escritura de datos almacenados al archivo copia
-                data = newRow[0].toString() + "%/%" + newRow[1].toString() + "%/%" + newRow[2].toString() + "%/%" + newRow[3].toString() + "%/%" + newRow[4].toString() + "%/%" + newRow[5].toString() + "%/%" + newRow[6].toString();
+                data = newRow[0].toString() + "%/%" + newRow[1].toString() + "%/%" + newRow[2].toString() + "%/%" + newRow[3].toString() + "%/%" + newRow[4].toString() + "%/%" + newRow[5].toString() + "%/%" + newRow[6].toString() + "%/%" + newRow[7].toString();
                 
                 writer.write(data + "\n");
                 noReg++;
             }
             
             // Escritura de nueva linea de registro
-            data = noReg + "%/%" + codProd + "%/%" + prod + "%/%" + cantidad + "%/%" + typeTXN + "%/%" + dateNow.format(formatDate) + "%/%" + timeNow.format(formatHour);
+            data = noReg + "%/%" + codProd + "%/%" + prod + "%/%" + cantidad + "%/%" + typeTXN + "%/%" + verificarUsuario() + "%/%" + dateNow.format(formatDate) + "%/%" + timeNow.format(formatHour);
             writer.write(data + "\n");
             
             // Cierre de acción de escritura y lectura
@@ -247,7 +327,7 @@ public class controlExistencias extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        TbpSeleccion = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         txtCodProdE = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
@@ -272,6 +352,7 @@ public class controlExistencias extends javax.swing.JFrame {
         btnBuscarA = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         tablaAlertas = new javax.swing.JTable();
+        jLabel8 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
         tablaMovimientos = new javax.swing.JTable();
@@ -284,6 +365,12 @@ public class controlExistencias extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
         jLabel1.setText("Control de existencias");
+
+        TbpSeleccion.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                TbpSeleccionStateChanged(evt);
+            }
+        });
 
         jLabel2.setText("Código de producto:");
 
@@ -363,7 +450,7 @@ public class controlExistencias extends javax.swing.JFrame {
                 .addContainerGap(64, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Entradas de producto", jPanel2);
+        TbpSeleccion.addTab("Entradas de producto", jPanel2);
 
         btnConsumir.setText("Consumir");
         btnConsumir.addActionListener(new java.awt.event.ActionListener() {
@@ -443,11 +530,16 @@ public class controlExistencias extends javax.swing.JFrame {
                 .addContainerGap(64, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Salidas de producto", jPanel3);
+        TbpSeleccion.addTab("Salidas de producto", jPanel3);
 
         jLabel6.setText("Código de producto:");
 
         btnBuscarA.setText("Buscar");
+        btnBuscarA.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarAActionPerformed(evt);
+            }
+        });
 
         tablaAlertas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -467,6 +559,10 @@ public class controlExistencias extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(tablaAlertas);
 
+        jLabel8.setFont(new java.awt.Font("Dialog", 2, 11)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(0, 153, 153));
+        jLabel8.setText("Seleccione o busque un producto para ver alerta");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -474,6 +570,7 @@ public class controlExistencias extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(44, 44, 44)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel8)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -491,23 +588,25 @@ public class controlExistencias extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtCodProdA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnBuscarA))
-                .addGap(28, 28, 28)
+                .addGap(7, 7, 7)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(117, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Alertas de stock bajo", jPanel1);
+        TbpSeleccion.addTab("Alertas de stock bajo", jPanel1);
 
         tablaMovimientos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "#", "Código", "Producto", "Cantidad", "Tipo de movimiento", "Fecha de registro", "Hora de registro"
+                "#", "Código", "Producto", "Cantidad", "Tipo de movimiento", "Usuario", "Fecha de registro", "Hora de registro"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -517,7 +616,8 @@ public class controlExistencias extends javax.swing.JFrame {
         jScrollPane5.setViewportView(tablaMovimientos);
         if (tablaMovimientos.getColumnModel().getColumnCount() > 0) {
             tablaMovimientos.getColumnModel().getColumn(0).setPreferredWidth(20);
-            tablaMovimientos.getColumnModel().getColumn(3).setPreferredWidth(15);
+            tablaMovimientos.getColumnModel().getColumn(1).setPreferredWidth(30);
+            tablaMovimientos.getColumnModel().getColumn(3).setPreferredWidth(25);
             tablaMovimientos.getColumnModel().getColumn(4).setPreferredWidth(90);
         }
 
@@ -569,13 +669,13 @@ public class controlExistencias extends javax.swing.JFrame {
                 .addContainerGap(28, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Visualizar movimientos", jPanel4);
+        TbpSeleccion.addTab("Visualizar movimientos", jPanel4);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(TbpSeleccion)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
@@ -587,7 +687,7 @@ public class controlExistencias extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1))
+                .addComponent(TbpSeleccion))
         );
 
         pack();
@@ -603,7 +703,7 @@ public class controlExistencias extends javax.swing.JFrame {
     }//GEN-LAST:event_btnIngresarActionPerformed
 
     private void btnBuscarSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarSActionPerformed
-        limpiarTabla(tablaEntradas);
+        limpiarTabla(tablaSalidas);
         buscarProducto(txtCodProdS, "listaProductos", tablaSalidas);
     }//GEN-LAST:event_btnBuscarSActionPerformed
 
@@ -612,12 +712,51 @@ public class controlExistencias extends javax.swing.JFrame {
     }//GEN-LAST:event_btnConsumirActionPerformed
 
     private void btnBuscarVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarVActionPerformed
-        
+        limpiarTabla(tablaMovimientos);
+        buscarMovimiento(txtCodProdV, "movimientos", tablaMovimientos);
     }//GEN-LAST:event_btnBuscarVActionPerformed
 
     private void btnVerMovimientosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerMovimientosActionPerformed
+        limpiarTabla(tablaMovimientos);
         obtenerDatos(tablaMovimientos, "movimientos");
+        
     }//GEN-LAST:event_btnVerMovimientosActionPerformed
+
+    private void TbpSeleccionStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_TbpSeleccionStateChanged
+        // Determinar el indice dentro del panel
+        int selectIndex = TbpSeleccion.getSelectedIndex();
+        
+        // Selección de indice por medio de switch
+        switch (selectIndex) {
+            case 0:
+                // Mostar en la tabla los datos del modulo correspondiente
+                limpiarTabla(tablaEntradas);
+                buscarProducto(txtCodProdE, "listaProductos", tablaEntradas);
+                break;
+            case 1:
+                // Mostar en la tabla los datos del modulo correspondiente
+                limpiarTabla(tablaSalidas);
+                buscarProducto(txtCodProdS, "listaProductos", tablaSalidas);
+                break;
+            case 2:
+                // Mostar en la tabla los datos del modulo correspondiente
+                limpiarTabla(tablaAlertas);
+                cargarDatos("listaProductos", tablaAlertas);
+                break;
+            case 3:
+                // Mostar en la tabla los datos del modulo correspondiente
+                limpiarTabla(tablaMovimientos);
+                obtenerDatos(tablaMovimientos, "movimientos");
+                break;
+            default:
+                throw new AssertionError();
+        }
+    }//GEN-LAST:event_TbpSeleccionStateChanged
+
+    private void btnBuscarAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarAActionPerformed
+        limpiarTabla(tablaAlertas);
+        buscarProducto(txtCodProdA, "listaProductos", tablaAlertas);
+    }//GEN-LAST:event_btnBuscarAActionPerformed
 
     /**
      * @param args the command line arguments
@@ -655,6 +794,7 @@ public class controlExistencias extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTabbedPane TbpSeleccion;
     private javax.swing.JButton btnBuscarA;
     private javax.swing.JButton btnBuscarE;
     private javax.swing.JButton btnBuscarS;
@@ -669,6 +809,7 @@ public class controlExistencias extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -677,7 +818,6 @@ public class controlExistencias extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JSpinner spnE;
     private javax.swing.JSpinner spnS;
     private javax.swing.JTable tablaAlertas;
