@@ -4,8 +4,16 @@
  */
 package algoritmosproyectofinal;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
@@ -21,6 +29,78 @@ public class pedidosCompra extends javax.swing.JFrame {
     public pedidosCompra() {
         initComponents();
         setLocationRelativeTo(null);
+        cargarDatos("listaPedidosCompra", tablaPedidos);
+    }
+    
+    // Función para cargar los datos completos de productos
+    public void cargarDatos(String fileroot, JTable table){
+        try {
+            // Creación ficticia del archivo
+            File file = new File("data/" + fileroot + ".txt");
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String data = "";
+            
+            // Recopilación de datos
+            while ((data = reader.readLine()) != null) {   
+                // Creación de objeto y asignación con separación de cadenas
+                Object[] newRow = data.split("%/%");
+                
+                DefaultTableModel model = (DefaultTableModel) table.getModel();
+                model.addRow(newRow);
+            }
+            
+            // Cierre de archivo de lectura
+            reader.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(controlExistencias.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(controlExistencias.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    // Función para cargar los detalles de un pedido
+    public void cargarDetalles(String fileroot, JTable table, String noP){
+        try {
+            // Creación ficticia del archivo
+            File file = new File("data/" + fileroot + ".txt");
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String data = "";
+            
+            // Recopilación de datos
+            while ((data = reader.readLine()) != null) {   
+                // Creación de objeto y asignación con separación de cadenas
+                Object[] newRow = data.split("%/%");
+                
+                // condición para filtrar por no. de pedido los detalles
+                if (newRow[0].toString().compareTo(noP) == 0){
+                    DefaultTableModel model = (DefaultTableModel) table.getModel();
+                    newRow = new Object[]{newRow[1], newRow[2], newRow[3], newRow[4]};
+                    model.addRow(newRow);
+                }
+                
+            }
+            
+            // Cierre de archivo de lectura
+            reader.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(controlExistencias.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(controlExistencias.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    // Función de limpiar tabla
+    public void limpiarTabla(JTable table){
+        // Determinación de modelo de tabla
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        
+        // obtener el recuento de columnas
+        int row = model.getRowCount()-1;
+        
+        // ciclo de repetición para remover las filas una por una
+        for (int i = row; i >= 0; i--) {
+            model.removeRow(i);
+        }
     }
 
     /**
@@ -49,6 +129,10 @@ public class pedidosCompra extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaPedidos = new javax.swing.JTable();
         jLabel8 = new javax.swing.JLabel();
+        btnVerDetalles = new javax.swing.JButton();
+        jLabel9 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tablaDetalles = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -65,7 +149,6 @@ public class pedidosCompra extends javax.swing.JFrame {
         jLabel3.setText("fecha de pedido:");
 
         cboProveedores1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "", "Pendiente", "En curso", "Completado" }));
-        cboProveedores1.setMinimumSize(new java.awt.Dimension(84, 24));
         cboProveedores1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cboProveedores1ActionPerformed(evt);
@@ -161,22 +244,69 @@ public class pedidosCompra extends javax.swing.JFrame {
 
             },
             new String [] {
-                "No. Pedido", "Proveedor", "Productos", "Fecha de pedido", "Fecha de entrega", "Estado del pedido"
+                "No. Pedido", "Fecha de pedido", "Fecha de entrega", "Estado del pedido", "Total"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, true, false, false, true
+                false, false, false, true, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
+        tablaPedidos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tablaPedidosMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tablaPedidos);
+        if (tablaPedidos.getColumnModel().getColumnCount() > 0) {
+            tablaPedidos.getColumnModel().getColumn(0).setHeaderValue("No. Pedido");
+            tablaPedidos.getColumnModel().getColumn(1).setHeaderValue("Fecha de pedido");
+            tablaPedidos.getColumnModel().getColumn(2).setHeaderValue("Fecha de entrega");
+            tablaPedidos.getColumnModel().getColumn(3).setHeaderValue("Estado del pedido");
+            tablaPedidos.getColumnModel().getColumn(4).setHeaderValue("Total");
+        }
 
         jLabel8.setFont(new java.awt.Font("Dialog", 2, 11)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(0, 153, 153));
         jLabel8.setText("Haga clic en la columna de estado del pedido para actualizar");
+
+        btnVerDetalles.setText("Ver detalles del pedido");
+        btnVerDetalles.setEnabled(false);
+        btnVerDetalles.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVerDetallesActionPerformed(evt);
+            }
+        });
+
+        jLabel9.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
+        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel9.setText("Detalles");
+
+        tablaDetalles.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Producto", "Cantidad", "Proveedor", "Precio"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tablaDetalles.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tablaDetallesMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(tablaDetalles);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -186,17 +316,30 @@ public class pedidosCompra extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(0, 67, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addContainerGap(80, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel8)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 564, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(14, 14, 14))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
+                                .addContainerGap())))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnVerDetalles)
+                .addGap(38, 38, 38))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -206,12 +349,18 @@ public class pedidosCompra extends javax.swing.JFrame {
                 .addGap(29, 29, 29)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(21, 21, 21)
-                .addComponent(jLabel7)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel9))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 319, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 319, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 319, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel8)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnVerDetalles)
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         pack();
@@ -224,7 +373,7 @@ public class pedidosCompra extends javax.swing.JFrame {
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         DefaultTableModel model = (DefaultTableModel) tablaPedidos.getModel();
         
-         model.addRow(new Object[]{1, "Juan", "Opción 1"});
+        model.addRow(new Object[]{1, "Juan", "Opción 1"});
         model.addRow(new Object[]{2, "Ana", "Opción 2"});
         model.addRow(new Object[]{3, "Pedro", "Opción 3"});
         
@@ -234,6 +383,27 @@ public class pedidosCompra extends javax.swing.JFrame {
         TableColumn opcionColumna = tablaPedidos.getColumnModel().getColumn(5);
         opcionColumna.setCellEditor(new DefaultCellEditor(comboBox));
     }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void tablaPedidosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaPedidosMouseClicked
+        btnVerDetalles.setEnabled(true);
+    }//GEN-LAST:event_tablaPedidosMouseClicked
+
+    private void btnVerDetallesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerDetallesActionPerformed
+        // Determinación de modelo de tabla
+        DefaultTableModel model = (DefaultTableModel) tablaPedidos.getModel();
+        
+        // Obtener la fila seleccionda de la tabla
+        int row = tablaPedidos.getSelectedRow();
+        
+        String noP = model.getValueAt(row, 0).toString();
+        
+        limpiarTabla(tablaDetalles);
+        cargarDetalles("detallesCompra", tablaDetalles, String.valueOf(noP));
+    }//GEN-LAST:event_btnVerDetallesActionPerformed
+
+    private void tablaDetallesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaDetallesMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tablaDetallesMouseClicked
 
     /**
      * @param args the command line arguments
@@ -273,6 +443,7 @@ public class pedidosCompra extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnLimpiar;
+    private javax.swing.JButton btnVerDetalles;
     private javax.swing.JComboBox<String> cboProveedores;
     private javax.swing.JComboBox<String> cboProveedores1;
     private javax.swing.JLabel jLabel1;
@@ -283,8 +454,11 @@ public class pedidosCompra extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable tablaDetalles;
     private javax.swing.JTable tablaPedidos;
     private javax.swing.JTextField txtFechaP;
     private javax.swing.JTextField txtProducto;

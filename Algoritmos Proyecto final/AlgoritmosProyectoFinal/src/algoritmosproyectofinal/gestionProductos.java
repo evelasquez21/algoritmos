@@ -90,7 +90,7 @@ public class gestionProductos extends javax.swing.JFrame {
         // Determinación de modelo de tabla
         DefaultTableModel model = (DefaultTableModel) productosTabla.getModel();
         
-        // obtener el recuento de columnas
+        // obtener el recuento de filas
         int row = model.getRowCount()-1;
         
         // ciclo de repetición para remover las filas una por una

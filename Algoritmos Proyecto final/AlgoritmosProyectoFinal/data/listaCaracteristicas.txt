@@ -3,3 +3,4 @@ rojo
 verde
 azul
 blanco
+Grande

@@ -18,6 +18,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -159,7 +160,7 @@ public class controlExistencias extends javax.swing.JFrame {
         // Determinación de modelo de tabla
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         
-        // obtener el recuento de columnas
+        // obtener el recuento de filas
         int row = model.getRowCount()-1;
         
         // ciclo de repetición para remover las filas una por una
@@ -250,7 +251,7 @@ public class controlExistencias extends javax.swing.JFrame {
             // Obtener la hora actual
             LocalTime timeNow = LocalTime.now();
 
-            // Formatear la fecha y hora en el formato deseado (opcional)
+            // Formatear la fecha y hora en el formato deseado
             DateTimeFormatter formatHour = DateTimeFormatter.ofPattern("HH:mm:ss");
             DateTimeFormatter formatDate = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             
@@ -316,6 +317,22 @@ public class controlExistencias extends javax.swing.JFrame {
         }
         
     }
+    
+    // Función para mostrar alerta
+    public void mostrarAlerta(JTable table){
+        // Determinación de modelo de tabla
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+                
+        // Obtener la fila seleccionda de la tabla
+        int row = table.getSelectedRow();
+                
+        int stockIndex = Integer.parseInt(model.getValueAt(row, 2).toString());
+        String prod = model.getValueAt(row, 1).toString();
+        if (stockIndex < 10){
+            // Mensaje de aviso al usuario
+            JOptionPane.showMessageDialog(null, "El producto: " + prod + " cuenta con un stock inicial de: " + stockIndex + " UN lo cual es muy bajo", "Atención", JOptionPane.WARNING_MESSAGE);
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -353,6 +370,7 @@ public class controlExistencias extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         tablaAlertas = new javax.swing.JTable();
         jLabel8 = new javax.swing.JLabel();
+        btnReestablecer = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
         tablaMovimientos = new javax.swing.JTable();
@@ -557,11 +575,23 @@ public class controlExistencias extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        tablaAlertas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tablaAlertasMouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(tablaAlertas);
 
         jLabel8.setFont(new java.awt.Font("Dialog", 2, 11)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(0, 153, 153));
-        jLabel8.setText("Seleccione o busque un producto para ver alerta");
+        jLabel8.setText("Seleccione y haga doble clic sobre un producto para ver alerta");
+
+        btnReestablecer.setText("Reestablecer");
+        btnReestablecer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReestablecerActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -570,13 +600,17 @@ public class controlExistencias extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(44, 44, 44)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel8)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(txtCodProdA, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnBuscarA)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel8)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(txtCodProdA, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnBuscarA)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnReestablecer)))
                 .addContainerGap(346, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -587,7 +621,8 @@ public class controlExistencias extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtCodProdA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBuscarA))
+                    .addComponent(btnBuscarA)
+                    .addComponent(btnReestablecer))
                 .addGap(7, 7, 7)
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -758,6 +793,15 @@ public class controlExistencias extends javax.swing.JFrame {
         buscarProducto(txtCodProdA, "listaProductos", tablaAlertas);
     }//GEN-LAST:event_btnBuscarAActionPerformed
 
+    private void btnReestablecerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReestablecerActionPerformed
+        limpiarTabla(tablaAlertas);
+        cargarDatos("listaProductos", tablaAlertas);
+    }//GEN-LAST:event_btnReestablecerActionPerformed
+
+    private void tablaAlertasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablaAlertasMouseClicked
+        mostrarAlerta(tablaAlertas);
+    }//GEN-LAST:event_tablaAlertasMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -801,6 +845,7 @@ public class controlExistencias extends javax.swing.JFrame {
     private javax.swing.JButton btnBuscarV;
     private javax.swing.JButton btnConsumir;
     private javax.swing.JButton btnIngresar;
+    private javax.swing.JButton btnReestablecer;
     private javax.swing.JButton btnVerMovimientos;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
