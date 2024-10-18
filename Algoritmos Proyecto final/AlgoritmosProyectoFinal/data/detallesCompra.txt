@@ -1,10 +1,9 @@
-1%/%Esponja%/%6%/%Walmart%/%12.00
-2%/%Tostadora%/%15%/%Electra%/%56.00
-2%/%Esponja%/%5%/%Walmart%/%12.00
-4%/%Tostadora%/%15%/%Electra%/%56.00
-4%/%Esponja%/%5%/%Walmart%/%12.00
-4%/%prueba2%/%1%/%Macro Sistemas%/%366.32
-7%/%Mousepad%/%2%/%Macro Sistemas%/%125.00
-8%/%Mousepad%/%3%/%Macro Sistemas%/%125.00
-9%/%Tostadora%/%3%/%Macro Sistemas%/%56.00
-10%/%Microondas%/%6%/%Tiendas Max%/%75.32
+1%/%Esponja%/%6%/%Walmart%/%12.00%/%0
+2%/%Tostadora%/%15%/%Electra%/%56.00%/%0
+2%/%Esponja%/%5%/%Walmart%/%12.00%/%0
+7%/%Mousepad%/%2%/%Macro Sistemas%/%125.00%/%0
+8%/%Mousepad%/%3%/%Macro Sistemas%/%125.00%/%0
+9%/%Tostadora%/%3%/%Macro Sistemas%/%56.00%/%0
+10%/%Microondas%/%6%/%Tiendas Max%/%75.32%/%0
+11%/%Tostadora%/%1%/%Electra%/%56.00%/%0
+11%/%Mousepad%/%2%/%Macro Sistemas%/%125.00%/%0
