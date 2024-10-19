@@ -217,11 +217,11 @@ public class pedidosCreacion extends javax.swing.JFrame {
                 Object[] newRow = data.split("%/%");
                 
                 // Escritura de datos almacenados al archivo copia
-                data = newRow[0].toString() + "%/%" + newRow[1].toString() + "%/%" + newRow[2].toString() + "%/%" + newRow[3].toString() + "%/%" + newRow[4].toString();
+                data = newRow[0].toString() + "%/%" + newRow[1].toString() + "%/%" + newRow[2].toString() + "%/%" + newRow[3].toString() + "%/%" + newRow[4].toString() + "%/%" + 0;
                 
                 writer.write(data + "\n");
+                noReg = Integer.parseInt(newRow[0].toString());
                 noReg++;
-                System.out.println(noReg);
             }
             // Separador de espacios
             Object[] newLine = listData.split("\n");
@@ -232,9 +232,8 @@ public class pedidosCreacion extends javax.swing.JFrame {
                 Object[] newRow = count.toString().split("%/%");
                 
                 // Escritura de nueva linea de registro
-                data = noReg + "%/%" + newRow[0].toString() + "%/%" + newRow[1].toString() + "%/%" + newRow[2].toString() + "%/%" + newRow[3].toString();
+                data = noReg + "%/%" + newRow[0].toString() + "%/%" + newRow[1].toString() + "%/%" + newRow[2].toString() + "%/%" + newRow[3].toString() + "%/%" + 0;
                 writer.write(data + "\n");
-                System.out.println(noReg);
             }
             
             // llamado de función para registrar el pedido en nuevo archivo secuencial
@@ -346,8 +345,6 @@ public class pedidosCreacion extends javax.swing.JFrame {
         btnCrearPedido = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         txtFechaE = new javax.swing.JTextField();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
         jLabel1.setText("Pedidos de compra");
@@ -549,7 +546,7 @@ public class pedidosCreacion extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtFechaE, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnCrearPedido)
+                .addComponent(btnCrearPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(22, Short.MAX_VALUE))
         );
 
@@ -571,6 +568,7 @@ public class pedidosCreacion extends javax.swing.JFrame {
 
     private void btnCrearPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCrearPedidoActionPerformed
         enviarLista(tablaPedidos);
+        limpiarTabla(tablaPedidos);
     }//GEN-LAST:event_btnCrearPedidoActionPerformed
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed

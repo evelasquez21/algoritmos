@@ -379,8 +379,6 @@ public class controlExistencias extends javax.swing.JFrame {
         btnBuscarV = new javax.swing.JButton();
         btnVerMovimientos = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
         jLabel1.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
         jLabel1.setText("Control de existencias");
 

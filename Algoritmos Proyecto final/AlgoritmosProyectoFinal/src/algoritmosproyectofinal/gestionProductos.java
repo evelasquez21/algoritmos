@@ -81,7 +81,6 @@ public class gestionProductos extends javax.swing.JFrame {
         cargarCombobox(cboCatProd, "listaCategorias");
         cargarCombobox(cboCarProd, "listaCaracteristicas");
         cargarCombobox(cboEspeProd, "listaEspecificaciones");
-        cargarCategorias(lCar, "listaCaracteristicas");
     }
     
     
@@ -316,11 +315,7 @@ public class gestionProductos extends javax.swing.JFrame {
         txtStockInicial = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        lCar = new javax.swing.JList<>();
         btnRefrescar = new javax.swing.JButton();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -498,18 +493,6 @@ public class gestionProductos extends javax.swing.JFrame {
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel9.setText("GTQ");
 
-        lCar.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        lCar.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                lCarValueChanged(evt);
-            }
-        });
-        jScrollPane2.setViewportView(lCar);
-
         btnRefrescar.setText("Refrescar");
         btnRefrescar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -560,9 +543,7 @@ public class gestionProductos extends javax.swing.JFrame {
                                             .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                             .addComponent(txtStockInicial, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE))))
                                 .addGap(0, 0, Short.MAX_VALUE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(72, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtCodProd, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -648,13 +629,8 @@ public class gestionProductos extends javax.swing.JFrame {
                     .addComponent(btnLimpiarCampos)
                     .addComponent(btnActualizar))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(47, 47, 47))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(62, 62, 62))))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(47, 47, 47))
         );
 
         pack();
@@ -764,6 +740,7 @@ public class gestionProductos extends javax.swing.JFrame {
             
                     data = codProd + "%/%" + desProd + "%/%" + catProd + "%/%" + carProd + "%/%" + espeProd + "%/%" + precioProd + "%/%" + stockInicialProd;
                 }
+                // Escritura de nueva linea
                 writer.write(data + "\n");
             }
             
@@ -962,10 +939,6 @@ public class gestionProductos extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_txtStockInicialKeyTyped
 
-    private void lCarValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lCarValueChanged
-        System.out.println(lCar.getSelectedValuesList());
-    }//GEN-LAST:event_lCarValueChanged
-
     private void btnRefrescarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefrescarActionPerformed
         cargarCombobox();
         limpiarTabla();
@@ -1031,8 +1004,6 @@ public class gestionProductos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JList<String> lCar;
     private javax.swing.JTable productosTabla;
     private javax.swing.JTextField txtCodProd;
     private javax.swing.JTextField txtDesProd;

@@ -55,8 +55,8 @@ public class logIn extends javax.swing.JFrame {
                     // Cierre de archivo de lectura
                     reader.close();
                     JOptionPane.showMessageDialog(null, "Ha iniciado sesión como: " + user, "Acceso correcto", JOptionPane.INFORMATION_MESSAGE);
-                    new controlExistencias().setVisible(true);
-                    this.hide();                    
+                    new menuPrincipal().setVisible(true);
+                    this.setVisible(false);
                 }
                 
             }
